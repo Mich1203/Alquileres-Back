@@ -17,6 +17,7 @@ CREATE TABLE
         measure_units varchar(10) NOT NULL,
         address varchar(1000) NOT NULL,
         no_of_bathrooms int NOT NULL,
+        images TEXT[],
         no_of_rooms int NOT NULL,
         description varchar(5000) NOT NULL,
         price numeric(18, 4) NOT NULL,

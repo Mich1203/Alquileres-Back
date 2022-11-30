@@ -8,7 +8,7 @@ import controller from "./controller";
 const router = express.Router();
 
 const getProfile = async (req: Request, res: Response) => {
-  response.success(req, res, {
+  response.success(res, {
     message: "Profile fetched successfully!",
     body: req.user,
   });
@@ -38,12 +38,12 @@ const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   try {
     const token = await controller.login(email, password);
-    response.success(req, res, {
+    response.success(res, {
       message: "Sesion iniciado con exito",
       body: token,
     });
   } catch (error: any) {
-    response.error(req, res, {
+    response.error(res, {
       details: error,
       message: "Usuario o contrasena invalida.",
     });
@@ -66,20 +66,20 @@ const register = async (req: Request, res: Response) => {
       .then((res) => res[0]);
 
     if (exists) {
-      return response.error(req, res, {
+      return response.error(res, {
         message: "Ya existe un usuario con el correo/identificacion ingresado.",
         status: 401,
         details: "register user function [registerUser]",
       });
     }
     const resData = await controller.register(user);
-    response.success(req, res, {
+    response.success(res, {
       message: "User registered successfully!",
       status: 201,
       body: resData,
     });
   } catch (error: any) {
-    return response.error(req, res, {
+    return response.error(res, {
       message: error.message,
       status: 500,
       details: "[Register] Error when registering user",

@@ -1,4 +1,4 @@
-import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
 const storage = getStorage();
 
@@ -9,10 +9,17 @@ const uploadFile = async (file: Express.Multer.File) => {
   return url;
 };
 
-const uploadMultipleFiles = async (files: Express.Multer.File[], tweetId?: string) => {
-  const prefix = tweetId ? `tweets/${tweetId}/` : '';
-  const storageRefs = files.map((file) => ref(storage, prefix + file.originalname));
-  await Promise.all(storageRefs.map((ref, index) => uploadBytes(ref, files[index].buffer)));
+const uploadMultipleFiles = async (
+  files: Express.Multer.File[],
+  placeId?: string,
+) => {
+  const prefix = placeId ? `tweets/${placeId}/` : "";
+  const storageRefs = files.map((file) =>
+    ref(storage, prefix + file.originalname),
+  );
+  await Promise.all(
+    storageRefs.map((ref, index) => uploadBytes(ref, files[index].buffer)),
+  );
   const urls = await Promise.all(storageRefs.map((ref) => getDownloadURL(ref)));
   return urls;
 };

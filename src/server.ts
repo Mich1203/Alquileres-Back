@@ -15,6 +15,7 @@ import config from "./config";
 import "./config/db";
 
 import authRoutes from "./components/auth/routes";
+import placesRoutes from "./components/places/routes";
 import passportMiddleware from "./middlewares/passport";
 import loggedIn from "./middlewares/loggedIn";
 
@@ -40,7 +41,12 @@ passport.use(passportMiddleware);
 
 //Routes
 
-app.use("/auth", authRoutes);
+const router = express.Router();
+
+router.use("/auth", authRoutes);
+router.use("/places", loggedIn, placesRoutes);
+
+app.use("/api", router);
 
 const port = config.api.PORT;
 app.listen(port, () => {
