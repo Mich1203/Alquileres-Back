@@ -9,6 +9,7 @@ export class IPlace {
   description: string;
   images: string[];
   price: number;
+  is_rented: boolean;
 
   constructor({
     id,
@@ -21,6 +22,7 @@ export class IPlace {
     description,
     images,
     price,
+    is_rented = false,
   }: IPlace) {
     if (id) this.id = id;
     this.capacity = capacity;
@@ -32,5 +34,6 @@ export class IPlace {
     this.description = description;
     this.images = images;
     this.price = parseFloat(price.toString());
+    this.is_rented = is_rented;
   }
 }

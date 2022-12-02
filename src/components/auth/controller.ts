@@ -4,8 +4,10 @@ import { IUser } from "../../interfaces/user";
 import auth from "../../auth";
 import { E_TABLES } from "../../interfaces/store";
 import { IAuth, IRegisterData } from "../../interfaces/auth";
+import { IAccount } from "../../interfaces/account";
 const AUTH_TABLE = E_TABLES.AUTH;
 const CLIENT_TABLE = E_TABLES.CLIENTS;
+const ACCOUNT_TABLE = E_TABLES.ACCOUNTS;
 
 export default {
   async login(email: string, password: string) {
@@ -37,14 +39,22 @@ export default {
       const hash = await bcrypt.hash(user.password as string, salt);
       user.password = hash;
 
-      await store.upsert<IAuth>(AUTH_TABLE, {
-        email: user.email,
-        password_hash: hash,
-      });
+      await store.upsert<IAuth>(
+        AUTH_TABLE,
+        {
+          email: user.email,
+          password_hash: hash,
+        },
+        "email",
+      );
       const clientData = await store.upsert<IUser>(
         CLIENT_TABLE,
         new IUser(user),
       );
+      await store.upsert<IAccount>(ACCOUNT_TABLE, {
+        balance: 0,
+        client_id: clientData.id,
+      });
       return { user: clientData, token: auth.sign(clientData) };
     } catch (error: any) {
       throw new Error(error?.message);

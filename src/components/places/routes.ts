@@ -4,6 +4,7 @@ import { multer } from "../../middlewares/multer";
 import response from "../../network/response";
 import { uploadMultipleFiles } from "../../utils/uploadFile";
 import controller from "./controller";
+import accountsController from "../accounts/controller";
 
 const router = express.Router();
 
@@ -61,7 +62,51 @@ const create = async (req: Request<any, any, IPlace>, res: Response) => {
   }
 };
 
-router.route("/").get(getAll).post(multer.array("files", 10), create).put(create);
+const rentPlace = async (
+  req: Request<{ id: number }, any, { months: number; no_of_people: number }>,
+  res: Response,
+) => {
+  const id = req.params.id;
+  try {
+    const place = await controller.getRegistry(id);
+    const userAccount = await accountsController.getRecordByUser(
+      req.user?.id as string,
+    );
+
+    if (!userAccount.account.id || !req.body.months) {
+      return;
+    }
+
+    await accountsController.modifyBalance(
+      userAccount.account.id,
+      place.price * req.body.months,
+      "Rent Place # " + place.id,
+    );
+
+    await controller.upsertRegistry(
+      new IPlace({
+        ...place,
+        is_rented: true,
+      }),
+    );
+
+    return response.success(res, {
+      message: "Place rented successfully!",
+    });
+  } catch (error: any) {
+    response.error(res, {
+      details: error,
+      message: "Error inesperado",
+    });
+  }
+};
+
+router
+  .route("/")
+  .get(getAll)
+  .post(multer.array("files", 10), create)
+  .put(create);
 router.get("/:id", getOne);
+router.post("/:id/rent", rentPlace);
 
 export default router;

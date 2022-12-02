@@ -13,7 +13,7 @@ const uploadMultipleFiles = async (
   files: Express.Multer.File[],
   placeId?: string,
 ) => {
-  const prefix = placeId ? `tweets/${placeId}/` : "";
+  const prefix = placeId ? `places/${placeId}/` : "";
   const storageRefs = files.map((file) =>
     ref(storage, prefix + file.originalname),
   );

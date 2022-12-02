@@ -16,7 +16,7 @@ export default {
   },
 
   async upsertRegistry(data: IPlace) {
-    const result = await store.upsert(TABLE, new IPlace(data));
+    const result = await store.upsert<IPlace>(TABLE, new IPlace(data));
     return result ? new IPlace(result) : result;
   },
 };

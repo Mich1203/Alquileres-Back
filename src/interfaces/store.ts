@@ -4,6 +4,7 @@ export enum E_TABLES {
   PLACES = "places",
   HOSTS = "hosts",
   ACCOUNTS = "accounts",
+  TRANSACTIONS = "transactions",
 }
 
 interface IPopulateOption<T> {

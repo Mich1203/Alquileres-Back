@@ -17,7 +17,8 @@ CREATE TABLE
         measure_units varchar(10) NOT NULL,
         address varchar(1000) NOT NULL,
         no_of_bathrooms int NOT NULL,
-        images TEXT[],
+        images TEXT [],
+        is_rented boolean NOT NULL DEFAULT FALSE,
         no_of_rooms int NOT NULL,
         description varchar(5000) NOT NULL,
         price numeric(18, 4) NOT NULL,
@@ -57,3 +58,16 @@ CREATE TABLE
         password_hash varchar(500) NOT NULL,
         CONSTRAINT PK_AUTHENTICATION PRIMARY KEY (email)
     );
+
+CREATE TABLE
+    IF NOT EXISTS transactions (
+        "id" serial NOT NULL,
+        account_id int NOT NULL,
+        amount double precision NOT NULL,
+        "date" date NOT NULL,
+        description varchar(1000) NOT NULL,
+        CONSTRAINT PK_TRX PRIMARY KEY ("id"),
+        CONSTRAINT FK_TRX_ACCOUNT FOREIGN KEY (account_id) REFERENCES accounts ("id")
+    );
+
+CREATE INDEX IDX_TRX_ACCOUNT ON transaction ( account_id );
